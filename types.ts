@@ -25,6 +25,7 @@ export interface Message {
 export interface ChatSession {
   id: string;
   agentId: string;
+  userId: string;
   title: string;
   messages: Message[];
   createdAt: string; // Using ISO string for easier storage and sorting
