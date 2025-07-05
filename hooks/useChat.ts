@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { Agent, Message, MessageRole, ChatSession } from '../types';
+import { Agent, Message, MessageRole, ChatSession, User } from '../types';
 import { GoogleGenAI, Chat } from "@google/genai";
 import { generateChatTitle } from '../services/aiService';
 import { backendService } from '../services/backendService';
@@ -10,7 +10,7 @@ const SESSIONS_STORAGE_KEY = 'luzzIA_chat_sessions';
 const API_KEY = backendService.getActiveApiKey();
 const ai = new GoogleGenAI({ apiKey: API_KEY });
 
-const useChat = (agents: Agent[]) => {
+const useChat = (agents: Agent[], currentUser: User | null) => {
   const [sessions, setSessions] = useState<Record<string, ChatSession>>({});
   const [currentAgent, setCurrentAgent] = useState<Agent | null>(null);
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
@@ -55,18 +55,22 @@ const useChat = (agents: Agent[]) => {
   }, []);
   
   const startNewChat = useCallback(() => {
-    if (!currentAgent) return;
+    if (!currentAgent || !currentUser) {
+        setError("Selecione um agente e certifique-se de estar logado.");
+        return;
+    }
     const newSessionId = `session-${Date.now()}`;
     const newSession: ChatSession = {
       id: newSessionId,
       agentId: currentAgent.id,
+      userId: currentUser.id,
       title: "Nova Conversa",
       messages: [],
       createdAt: new Date().toISOString(),
     };
     setSessions(prev => ({...prev, [newSessionId]: newSession}));
     setActiveSessionId(newSessionId);
-  }, [currentAgent]);
+  }, [currentAgent, currentUser]);
 
   const sendMessage = useCallback(async (text: string) => {
     if (!activeSessionId || !currentAgent) {
@@ -240,7 +244,7 @@ const useChat = (agents: Agent[]) => {
 
 
   const agentSessions = Object.values(sessions)
-    .filter(s => s.agentId === currentAgent?.id)
+    .filter(s => s.agentId === currentAgent?.id && s.userId === currentUser?.id)
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
   const activeSession = activeSessionId ? sessions[activeSessionId] : null;
