@@ -27,7 +27,7 @@ const ChatPage: React.FC<ChatPageProps> = ({ onLogout, currentUser, agents }) =>
     deleteSession,
     renameSession,
     exportSession,
-  } = useChat(agents);
+  } = useChat(agents, currentUser);
   
   const [isAgentSidebarOpen, setIsAgentSidebarOpen] = useState(false);
   const [isHistoryPanelOpen, setIsHistoryPanelOpen] = useState(false); 
