@@ -12,9 +12,9 @@ export default async function handler(req, res) {
       })
       return res.status(201).json(user)
     } catch (error) {
-      console.error(error)  // <- importante para ver no log da Vercel
-      return res.status(500).json({ error: 'Erro ao criar usuário' })
-    }
+  console.error(error); // importante para Vercel logar
+  return res.status(500).json({ error: error.message || 'Erro desconhecido' });
+}
   } else {
     return res.status(405).json({ error: 'Método não permitido' })
   }
