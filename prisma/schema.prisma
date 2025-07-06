@@ -3,16 +3,17 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql" // ou "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id        String   @id @default(uuid())
-  username  String   @unique
-  password  String
-  role      String   // "admin" | "user"
-  createdAt DateTime @default(now())
+  id            String         @id @default(uuid())
+  name          String
+  email         String         @unique
+  password      String
+  image         String?
+  role          String?
   conversations Conversation[]
 }
 
