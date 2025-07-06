@@ -62,34 +62,22 @@
   </form>
 
   <script>
-    document.getElementById('cadastro').addEventListener('submit', async function (e) {
-      e.preventDefault();
-      const username = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value.trim();
+document.getElementById('form').addEventListener('submit', async function (e) {
+  e.preventDefault()
 
-      if (!username || !password) {
-        document.getElementById('msg').innerText = 'Preencha todos os campos.';
-        return;
-      }
+  const username = document.getElementById('username').value
+  const password = document.getElementById('password').value
 
-      const res = await fetch('/api/users', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      });
+  const response = await fetch('/api/users', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password })
+  })
 
-      const msg = document.getElementById('msg');
-      if (res.ok) {
-        const data = await res.json();
-        msg.innerText = '✅ Usuário cadastrado: ' + data.username;
-        msg.style.color = 'green';
-      } else {
-        const error = await res.json();
-        msg.innerText = '❌ Erro: ' + (error.error || 'Erro desconhecido');
-        msg.style.color = 'red';
-      }
-    });
-  </script>
+  const result = await response.json()
+  alert('Usuário criado: ' + result.username)
+})
+</script>
 
 </body>
 </html>
