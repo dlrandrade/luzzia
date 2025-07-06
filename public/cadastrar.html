@@ -1,83 +1,46 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Cadastrar Usuário</title>
   <style>
-    body {
-      font-family: sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background: #f5f5f5;
-    }
-    form {
-      background: #fff;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      max-width: 400px;
-      width: 100%;
-    }
-    h2 {
-      margin-bottom: 1rem;
-    }
-    input {
-      width: 100%;
-      padding: 0.8rem;
-      margin: 0.5rem 0;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      background: #ffffcc; /* amarelo claro */
-    }
-    button {
-      width: 100%;
-      padding: 0.8rem;
-      background: #333;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #111;
-    }
-    .msg {
-      margin-top: 1rem;
-      font-size: 14px;
-      font-weight: bold;
-    }
+    body { font-family: sans-serif; background: #f2f2f2; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    .form-box { background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    input, button { width: 100%; margin-bottom: 1rem; padding: 10px; }
+    button { background: black; color: white; border: none; cursor: pointer; }
+    #mensagem { margin-top: 1rem; text-align: center; }
   </style>
 </head>
 <body>
-
-  <form id="cadastro">
+  <div class="form-box">
     <h2>Cadastrar Usuário</h2>
     <input type="text" id="username" placeholder="Usuário" required />
     <input type="password" id="password" placeholder="Senha" required />
-    <button type="submit">Cadastrar</button>
-    <div class="msg" id="msg"></div>
-  </form>
+    <button onclick="cadastrar()">Cadastrar</button>
+    <div id="mensagem"></div>
+  </div>
 
   <script>
-document.getElementById('form').addEventListener('submit', async function (e) {
-  e.preventDefault()
+    async function cadastrar() {
+      const username = document.getElementById('username').value
+      const password = document.getElementById('password').value
+      const mensagem = document.getElementById('mensagem')
 
-  const username = document.getElementById('username').value
-  const password = document.getElementById('password').value
+      const res = await fetch('/api/users/index', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      })
 
-  const res = await fetch('/api/users/index', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password })
-  })
-
-  const result = await response.json()
-  alert('Usuário criado: ' + result.username)
-})
-</script>
-
+      if (res.ok) {
+        mensagem.innerText = 'Usuário cadastrado com sucesso!'
+        mensagem.style.color = 'green'
+      } else {
+        const erro = await res.json().catch(() => ({}))
+        mensagem.innerText = erro.error || 'Erro ao cadastrar'
+        mensagem.style.color = 'red'
+      }
+    }
+  </script>
 </body>
 </html>
