@@ -1,1 +1,0 @@
-// Prisma Client index.js simulado
