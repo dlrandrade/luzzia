@@ -68,7 +68,7 @@ document.getElementById('form').addEventListener('submit', async function (e) {
   const username = document.getElementById('username').value
   const password = document.getElementById('password').value
 
-  const response = await fetch('/api/users', {
+  const res = await fetch('/api/users/index', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ username, password })
