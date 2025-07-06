@@ -2,30 +2,51 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Cadastro de Usuário</title>
+  <title>Cadastrar Usuário</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      padding: 2rem;
-      background: #f8f9fa;
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #f5f5f5;
     }
     form {
-      background: white;
+      background: #fff;
       padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 0 10px #ccc;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       max-width: 400px;
-      margin: auto;
+      width: 100%;
     }
-    input, button {
+    h2 {
+      margin-bottom: 1rem;
+    }
+    input {
       width: 100%;
       padding: 0.8rem;
-      margin-top: 1rem;
-      border: 1px solid #ddd;
-      border-radius: 4px;
+      margin: 0.5rem 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background: #ffffcc; /* amarelo claro */
+    }
+    button {
+      width: 100%;
+      padding: 0.8rem;
+      background: #333;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #111;
     }
     .msg {
       margin-top: 1rem;
+      font-size: 14px;
       font-weight: bold;
     }
   </style>
@@ -41,10 +62,15 @@
   </form>
 
   <script>
-    document.getElementById('cadastro').addEventListener('submit', async function(e) {
+    document.getElementById('cadastro').addEventListener('submit', async function (e) {
       e.preventDefault();
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      if (!username || !password) {
+        document.getElementById('msg').innerText = 'Preencha todos os campos.';
+        return;
+      }
 
       const res = await fetch('/api/users', {
         method: 'POST',
@@ -55,11 +81,11 @@
       const msg = document.getElementById('msg');
       if (res.ok) {
         const data = await res.json();
-        msg.innerText = 'Usuário cadastrado: ' + data.username;
+        msg.innerText = '✅ Usuário cadastrado: ' + data.username;
         msg.style.color = 'green';
       } else {
         const error = await res.json();
-        msg.innerText = 'Erro: ' + (error.error || 'Não foi possível cadastrar');
+        msg.innerText = '❌ Erro: ' + (error.error || 'Erro desconhecido');
         msg.style.color = 'red';
       }
     });
