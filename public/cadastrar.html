@@ -2,19 +2,54 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Cadastrar Usuário</title>
   <style>
-    body { font-family: sans-serif; background: #f2f2f2; display: flex; justify-content: center; align-items: center; height: 100vh; }
-    .form-box { background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    input, button { width: 100%; margin-bottom: 1rem; padding: 10px; }
-    button { background: black; color: white; border: none; cursor: pointer; }
-    #mensagem { margin-top: 1rem; text-align: center; }
+    body {
+      font-family: sans-serif;
+      background: #f6f6f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .card {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+      width: 300px;
+    }
+    input, button {
+      width: 100%;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    button {
+      background-color: black;
+      color: white;
+      cursor: pointer;
+    }
+    .error {
+      color: red;
+      text-align: center;
+      margin-top: 10px;
+    }
+    .success {
+      color: green;
+      text-align: center;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
-  <div class="form-box">
+  <div class="card">
     <h2>Cadastrar Usuário</h2>
-    <input type="text" id="username" placeholder="Usuário" required />
+    <input type="text" id="name" placeholder="Nome" required />
+    <input type="email" id="email" placeholder="Email" required />
     <input type="password" id="password" placeholder="Senha" required />
     <button onclick="cadastrar()">Cadastrar</button>
     <div id="mensagem"></div>
@@ -22,23 +57,36 @@
 
   <script>
     async function cadastrar() {
-      const username = document.getElementById('username').value
-      const password = document.getElementById('password').value
-      const mensagem = document.getElementById('mensagem')
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const mensagem = document.getElementById('mensagem');
 
-      const res = await fetch('/api/users/index', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      })
+      if (!name || !email || !password) {
+        mensagem.textContent = 'Preencha todos os campos.';
+        mensagem.className = 'error';
+        return;
+      }
 
-      if (res.ok) {
-        mensagem.innerText = 'Usuário cadastrado com sucesso!'
-        mensagem.style.color = 'green'
-      } else {
-        const erro = await res.json().catch(() => ({}))
-        mensagem.innerText = erro.error || 'Erro ao cadastrar'
-        mensagem.style.color = 'red'
+      try {
+        const res = await fetch('/api/users/index', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password })
+        });
+
+        const data = await res.json();
+
+        if (res.status === 201) {
+          mensagem.textContent = 'Usuário cadastrado com sucesso!';
+          mensagem.className = 'success';
+        } else {
+          mensagem.textContent = data.error || 'Erro ao cadastrar';
+          mensagem.className = 'error';
+        }
+      } catch (err) {
+        mensagem.textContent = 'Erro ao conectar com a API.';
+        mensagem.className = 'error';
       }
     }
   </script>
