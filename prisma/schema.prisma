@@ -1,3 +1,4 @@
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,12 +9,12 @@ datasource db {
 }
 
 model User {
-  id            String         @id @default(uuid())
-  name          String
-  email         String         @unique
-  password      String
-  image         String?
-  role          String?
+  id       String   @id @default(uuid())
+  name     String
+  email    String   @unique
+  password String
+  image    String?
+  role     String?
   conversations Conversation[]
 }
 
@@ -21,7 +22,6 @@ model Conversation {
   id        String   @id @default(uuid())
   message   String
   createdAt DateTime @default(now())
-
   userId    String
   user      User     @relation(fields: [userId], references: [id])
 }
