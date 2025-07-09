@@ -1,1 +1,80 @@
-ÿταΘ¬Κ‹«>Έ¬™«…ι
+// Prisma schema for LuzzIA
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  Admin
+  User
+}
+
+enum HistoryItemType {
+  note
+  youtube
+  pdf
+  chat
+}
+
+model Agent {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  prompt      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  role      Role
+  lastLogin DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ApiProvider {
+  id        String   @id @default(uuid())
+  providerId String
+  name      String
+  apiKey    String
+  isActive  Boolean  @default(false)
+  model     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ChatThread {
+  id        String   @id @default(uuid())
+  title     String
+  type      HistoryItemType
+  summary   String
+  messages  ChatMessage[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ChatMessage {
+  id          String   @id @default(uuid())
+  sender      String
+  text        String
+  agentName   String?
+  chatThread  ChatThread @relation(fields: [chatThreadId], references: [id])
+  chatThreadId String
+  createdAt   DateTime @default(now())
+}
+
+model WebhookEvent {
+  id        String   @id @default(uuid())
+  status    String
+  event     String
+  timestamp DateTime @default(now())
+}
+οΏ½οΏ½
