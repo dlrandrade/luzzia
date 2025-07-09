@@ -1,0 +1,25 @@
+{
+  "name": "luzzia-v2",
+  "version": "1.0.0",
+  "description": "An intelligent chat interface",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prisma:generate": "prisma generate",
+    "vercel-build": "prisma generate && prisma migrate deploy"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google/genai": "^0.14.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-markdown": "^10.1.0"
+  },
+  "devDependencies": {
+    "@prisma/client": "6.1.1",
+    "prisma": "6.1.1",
+    "typescript": "^5.0.0"
+  }
+}
